@@ -179,20 +179,99 @@
             { id: '4', name: 'Ethan', date: 'Apr 12', amount: 50.00, status: 'incomplete', txId: '3456780129', bankAccount: 'MyBank Checking', type: 'outgoing' },
             { id: '5', name: 'Stephanie', date: 'Mar 21', amount: 40.00, status: 'completed', txId: '2345678901', bankAccount: 'MyBank Checking', type: 'outgoing' },
             // Changed status to 'pending' for incoming transactions to simulate acceptance flow
-            { id: '6', name: 'John Doe', date: 'Today', amount: 75.00, status: 'pending', txId: '9876543210', bankAccount: 'Unknown', type: 'incoming' },
-            { id: '7', name: 'Jane Smith', date: 'Yesterday', amount: 30.00, status: 'pending', txId: '1098765432', bankAccount: 'Unknown', type: 'incoming' },
+            { id: '6', name: 'Alex Chen', date: 'Today', amount: 75.00, status: 'pending', txId: '9876543210', bankAccount: 'Unknown', type: 'incoming' },
+            { id: '7', name: 'Sarah Miller', date: 'Yesterday', amount: 30.00, status: 'pending', txId: '1098765432', bankAccount: 'Unknown', type: 'incoming' },
         ];
 
         // Define initial conversations for the chat list
         const initialConversations = [
-            { id: 'convo-ethan', name: 'Ethan', lastMessage: 'Awesome! Can you send me your share, $50, for the tickets?', time: '11:20 AM', unread: 1 },
-            { id: 'convo-samuel', name: 'Samuel', lastMessage: 'Thanks for the lunch!', time: 'Yesterday', unread: 0 },
-            { id: 'convo-michelle', name: 'Michelle', lastMessage: 'Did you get my transfer?', time: 'Mon', unread: 0 },
-            { id: 'convo-daniel', name: 'Daniel', lastMessage: 'Meeting confirmed for Friday.', time: 'Apr 15', unread: 0 },
-            { id: 'convo-stephanie', name: 'Stephanie', lastMessage: 'See you at the gym!', time: 'Mar 21', unread: 0 },
+            { 
+                id: 'convo-ethan', 
+                name: 'Ethan', 
+                lastMessage: 'Awesome! Can you send me your share, $50, for the tickets? This is a very long message to test the wrapping functionality and ensure it does not overflow the component.', 
+                time: 'Today 11:20 AM', 
+                unread: 1,
+                messages: [
+                    { sender: 'user', text: 'Hey Ethan, did you get those concert tickets?', time: '11:15 AM' },
+                    { sender: 'other', text: 'Yep, just confirmed them! Looking forward to it!', time: '11:17 AM' },
+                    { sender: 'user', text: 'Awesome! Can\'t wait. What\'s the plan for getting there?', time: '11:18 AM' },
+                    { sender: 'other', text: 'I was thinking we could carpool. I\'ll drive if you\'re good with that.', time: '11:19 AM' },
+                    { sender: 'other', text: 'Awesome! Can you send me your share, $50, for the tickets? This is a very long message to test the wrapping functionality and ensure it does not overflow the component.', time: '11:20 AM' },
+                ]
+            }, 
+            { 
+                id: 'convo-samuel', 
+                name: 'Samuel', 
+                lastMessage: 'Thanks for the lunch!', 
+                time: 'Yesterday 10:00 AM', 
+                unread: 0,
+                messages: [
+                    { sender: 'other', text: 'Hey, thanks again for lunch yesterday!', time: '09:30 AM' },
+                    { sender: 'user', text: 'No problem, it was great catching up!', time: '09:31 AM' },
+                    { sender: 'other', text: 'Totally! Just wanted to confirm if you got the payment I sent for my share?', time: '09:32 AM' },
+                    { sender: 'user', text: 'Yep, got it! Thanks!', time: '09:33 AM' }
+                ]
+            },
+            { 
+                id: 'convo-michelle', 
+                name: 'Michelle', 
+                lastMessage: 'Did you get my transfer?', 
+                time: 'Apr 29 09:00 AM', 
+                unread: 0,
+                messages: [
+                    { sender: 'user', text: 'Hi Michelle, just checking if you received the transfer for the group gift?', time: '02:05 PM' },
+                    { sender: 'other', text: 'Oh, hey! Yes, I did! Thanks so much, that was quick!', time: '02:07 PM' },
+                    { sender: 'user', text: 'Great! Just wanted to make sure.', time: '02:08 PM' }
+                ]
+            }, 
+            { 
+                id: 'convo-daniel', 
+                name: 'Daniel', 
+                lastMessage: 'Meeting confirmed for Friday.', 
+                time: 'Apr 15 08:00 AM', 
+                unread: 0,
+                messages: [
+                    { sender: 'other', text: 'Hey Daniel, just a reminder about our meeting on Friday at 10 AM. Agenda is in the invite.', time: '04:00 PM' },
+                    { sender: 'user', text: 'Got it, thanks for the reminder! I\'ll be there.', time: '04:01 PM' },
+                    { sender: 'other', text: 'Perfect. See you then!', time: '04:02 PM' }
+                ]
+            }, 
+            { 
+                id: 'convo-stephanie', 
+                name: 'Stephanie', 
+                lastMessage: 'See you at the gym!', 
+                time: 'Mar 21 07:00 AM', 
+                unread: 0,
+                messages: [
+                    { sender: 'user', text: 'Are you still planning on hitting the gym later?', time: '05:30 PM' },
+                    { sender: 'other', text: 'Absolutely! Just finishing up work. Be there in about 30?', time: '05:32 PM' },
+                    { sender: 'user', text: 'Sounds good! I\'m already here, warming up.', time: '05:33 PM' },
+                    { sender: 'other', text: 'Nice! See you soon!', time: '05:34 PM' }
+                ]
+            }, 
             // Updated messages to reflect pending incoming transactions
-            { id: 'convo-john', name: 'John Doe', lastMessage: 'Just sent you $75. Please accept.', time: '10:00 AM', unread: 1 },
-            { id: 'convo-jane', name: 'Jane Smith', lastMessage: 'Transferred the $30. Let me know when you get it.', time: 'Yesterday', unread: 1 },
+            { 
+                id: 'convo-alex', 
+                name: 'Alex Chen', 
+                lastMessage: 'Just sent you $75. Please accept.', 
+                time: 'Today 10:00 AM', 
+                unread: 1,
+                messages: [
+                    { sender: 'other', text: 'Hey, just sent you $75. Please accept.', time: '10:00 AM' },
+                    { sender: 'user', text: 'Okay, I\'ll accept it now!', time: '10:01 AM' },
+                ]
+            }, 
+            { 
+                id: 'convo-sarah', 
+                name: 'Sarah Miller', 
+                lastMessage: 'Transferred the $30. Let me know when you get it. This message is also quite long to ensure proper wrapping and alignment.', 
+                time: 'Yesterday 03:00 PM', 
+                unread: 1,
+                messages: [
+                    { sender: 'other', text: 'Transferred the $30. Let me know when you get it. This message is also quite long to ensure proper wrapping and alignment.', time: '03:00 PM' },
+                    { sender: 'user', text: 'Got it, accepting now!', time: '03:01 PM' },
+                ]
+            }, 
         ];
 
         const appState = {
@@ -208,7 +287,9 @@
             correctPin: '1234',
             currentReceiveAmount: 0, // New: amount for incoming transaction
             currentReceiveSender: '', // New: sender for incoming transaction
-            currentReceiveTxId: '' // New: ID of the pending incoming transaction
+            currentReceiveTxId: '', // New: ID of the pending incoming transaction
+            paymentFlowActive: false, // Flag to indicate if bank linking is from payment flow (sending)
+            receiveFlowActive: false // New: Flag to indicate if bank linking is from receive payment flow
         };
 
         const modalContainer = document.getElementById('modal-container');
@@ -237,23 +318,96 @@
             }
         }
 
+        // Helper function to convert chat time strings into Date objects for sorting
+        function getSortableChatDate(timeString) {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+
+            if (timeString.startsWith('Today')) {
+                const timePart = timeString.replace('Today ', '');
+                const [hours, minutes, period] = timePart.match(/(\d+):(\d+) (AM|PM)/).slice(1);
+                let h = parseInt(hours);
+                if (period === 'PM' && h < 12) h += 12;
+                if (period === 'AM' && h === 12) h = 0; // Midnight
+                const dateWithTime = new Date(today);
+                dateWithTime.setHours(h, parseInt(minutes), 0, 0);
+                return dateWithTime;
+            } else if (timeString.startsWith('Yesterday')) {
+                const timePart = timeString.replace('Yesterday ', '');
+                const [hours, minutes, period] = timePart.match(/(\d+):(\d+) (AM|PM)/).slice(1);
+                let h = parseInt(hours);
+                if (period === 'PM' && h < 12) h += 12;
+                if (period === 'AM' && h === 12) h = 0; // Midnight
+                const dateWithTime = new Date(yesterday);
+                dateWithTime.setHours(h, parseInt(minutes), 0, 0);
+                return dateWithTime;
+            } else {
+                // For specific dates like "Apr 15 08:00 AM"
+                try {
+                    // Append current year to make it a full date string for parsing
+                    const fullDateString = `${timeString.split(' ')[0]} ${timeString.split(' ')[1]}, ${currentYear} ${timeString.split(' ').slice(2).join(' ')}`;
+                    const parsedDate = new Date(fullDateString);
+                    if (!isNaN(parsedDate.getTime())) { // Check if date is valid
+                        return parsedDate;
+                    }
+                } catch (e) {
+                    console.error("Error parsing date string:", timeString, e);
+                }
+                return new Date(0); // Fallback for unparseable dates, push to end
+            }
+        }
+
         function renderChatList() {
             const conversationList = document.getElementById('conversation-list');
             conversationList.innerHTML = ''; // Clear previous list
 
-            appState.conversations.forEach(convo => {
+            const sortedConversations = [...appState.conversations].sort((a, b) => {
+                // Primary sort: Unread messages first
+                if (a.unread > 0 && b.unread === 0) return -1;
+                if (a.unread === 0 && b.unread > 0) return 1;
+
+                // Secondary sort: By date/time (most recent first)
+                const dateA = getSortableChatDate(a.time);
+                const dateB = getSortableChatDate(b.time);
+
+                return dateB.getTime() - dateA.getTime(); // Descending order
+            });
+
+            sortedConversations.forEach(convo => {
                 const li = document.createElement('li');
-                // Removed the circle div, adjusted padding and alignment for text-only entry
-                li.className = 'flex items-center p-4 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50 transition-colors';
+                li.className = 'flex items-center justify-between p-4 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50 transition-colors';
                 li.onclick = () => openIndividualChat(convo.name);
+
+                // Truncate lastMessage for preview
+                const maxMessageLength = 40; // Define max length for preview
+                const displayMessage = convo.lastMessage.length > maxMessageLength ? 
+                                       convo.lastMessage.substring(0, maxMessageLength) + '...' : 
+                                       convo.lastMessage;
+
+                // Determine how to display the time string
+                let displayedTime = convo.time;
+                if (convo.time.startsWith('Today') || convo.time.startsWith('Yesterday')) {
+                    // Keep full string for Today/Yesterday with time
+                    displayedTime = convo.time;
+                } else {
+                    // For specific dates, just show the date part (e.g., "Apr 29")
+                    const parts = convo.time.split(' ');
+                    if (parts.length >= 2) {
+                        displayedTime = `${parts[0]} ${parts[1]}`;
+                    }
+                }
+
+
                 li.innerHTML = `
-                    <div class="flex-grow pl-2"> <!-- Added left padding for alignment -->
+                    <div class="flex-grow pl-2">
                         <div class="font-semibold text-lg">${convo.name}</div>
-                        <div class="text-sm text-gray-600 truncate">${convo.lastMessage}</div>
+                        <div class="text-sm text-gray-600">${displayMessage}</div>
                     </div>
-                    <div class="text-right text-xs text-gray-500 ml-4">
-                        ${convo.time}
-                        ${convo.unread > 0 ? `<span class="block mt-1 bg-green-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center mx-auto">${convo.unread}</span>` : ''}
+                    <div class="flex flex-col items-end text-right text-xs text-gray-500 flex-shrink-0 ml-2">
+                        <span>${displayedTime}</span>
+                        ${convo.unread > 0 ? `<span class="mt-1 bg-green-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">${convo.unread}</span>` : ''}
                     </div>
                 `;
                 conversationList.appendChild(li);
@@ -262,8 +416,16 @@
 
         function openIndividualChat(recipientName) {
             appState.currentRecipient = recipientName;
+
+            // Find the conversation and set its unread count to 0
+            const convoIndex = appState.conversations.findIndex(c => c.name === recipientName);
+            if (convoIndex !== -1) {
+                appState.conversations[convoIndex].unread = 0;
+            }
+
             navigateToTab('individual-chat'); // Navigate to the individual chat view
             renderIndividualChat(); // Render content for the specific chat
+            renderChatList(); // Re-render the chat list to update the unread badge
         }
 
         function renderIndividualChat() {
@@ -272,95 +434,69 @@
             chatHeader.textContent = appState.currentRecipient;
             chatMessagesContainer.innerHTML = ''; // Clear existing messages
 
-            // Mock messages based on recipient
-            let messages = [];
-            if (appState.currentRecipient === 'Ethan') {
-                messages = [
-                    { sender: 'user', text: 'Hey Ethan, did you get those concert tickets?', time: '11:15' },
-                    { sender: 'other', text: 'Yep, just confirmed them! Looking forward to it!', time: '11:17' },
-                    { sender: 'user', text: 'Awesome! Can\'t wait. What\'s the plan for getting there?', time: '11:18' },
-                    { sender: 'other', text: 'I was thinking we could carpool. I\'ll drive if you\'re good with that.', time: '11:19' },
-                    { sender: 'other', text: 'Awesome! Can you send me your share, $50, for the tickets?', time: '11:20' },
-                ];
-            } else if (appState.currentRecipient === 'Samuel') {
-                messages = [
-                    { sender: 'other', text: 'Hey, thanks again for lunch yesterday!', time: '09:30' },
-                    { sender: 'user', text: 'No problem, it was great catching up!', time: '09:31' },
-                    { sender: 'other', text: 'Totally! Just wanted to confirm if you got the payment I sent for my share?', time: '09:32' },
-                    { sender: 'user', text: 'Yep, got it! Thanks!', time: '09:33' }
-                ];
-            } else if (appState.currentRecipient === 'Michelle') {
-                messages = [
-                    { sender: 'user', text: 'Hi Michelle, just checking if you received the transfer for the group gift?', time: '14:05' },
-                    { sender: 'other', text: 'Oh, hey! Yes, I did! Thanks so much, that was quick!', time: '14:07' },
-                    { sender: 'user', text: 'Great! Just wanted to make sure.', time: '14:08' }
-                ];
-            } else if (appState.currentRecipient === 'Daniel') {
-                messages = [
-                    { sender: 'other', text: 'Hey Daniel, just a reminder about our meeting on Friday at 10 AM. Agenda is in the invite.', time: '16:00' },
-                    { sender: 'user', text: 'Got it, thanks for the reminder! I\'ll be there.', time: '16:01' },
-                    { sender: 'other', text: 'Perfect. See you then!', time: '16:02' }
-                ];
-            } else if (appState.currentRecipient === 'Stephanie') {
-                messages = [
-                    { sender: 'user', text: 'Are you still planning on hitting the gym later?', time: '17:30' },
-                    { sender: 'other', text: 'Absolutely! Just finishing up work. Be there in about 30?', time: '17:32' },
-                    { sender: 'user', text: 'Sounds good! I\'m already here, warming up.', time: '17:33' },
-                    { sender: 'other', text: 'Nice! See you soon!', time: '17:34' }
-                ];
-            } else if (appState.currentRecipient === 'John Doe') {
-                messages = [
-                    { sender: 'other', text: 'Hey, just sent you $75. Please accept.', time: '10:00 AM' },
-                    { sender: 'user', text: 'Okay, I\'ll accept it now!', time: '10:01 AM' },
-                ];
-            } else if (appState.currentRecipient === 'Jane Smith') {
-                messages = [
-                    { sender: 'other', text: 'Transferred the $30. Let me know when you get it.', time: 'Yesterday' },
-                    { sender: 'user', text: 'Got it, accepting now!', time: 'Yesterday' },
-                ];
-            }
-            else {
-                // Default generic messages for any other contact
-                messages = [
-                    { sender: 'other', text: `Hi, this is a chat with ${appState.currentRecipient}.`, time: '10:00' },
-                    { sender: 'user', text: 'Hello!', time: '10:01' },
-                    { sender: 'other', text: 'How can I help you today?', time: '10:02' }
-                ];
-            }
+            // Find the current conversation object
+            const currentConvo = appState.conversations.find(c => c.name === appState.currentRecipient);
+            const messages = currentConvo ? currentConvo.messages : []; // Use messages from appState
 
             messages.forEach(msg => {
                 const div = document.createElement('div');
-                // Corrected alignment for chat bubbles and timestamps
-                div.className = `flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} flex-col`; 
-                div.innerHTML = `
-                    <div class="text-xs text-gray-500 ${msg.sender === 'user' ? 'text-right' : 'text-left'} mb-1">${msg.time}</div>
-                    <div class="${msg.sender === 'user' ? 'bg-green-100 text-green-900' : 'bg-gray-200'} rounded-lg px-3 py-2 max-w-xs">
-                        ${msg.text}
-                    </div>
-                `;
+                if (msg.sender === 'system') {
+                    // For "Payment sent" messages (left-aligned, distinct style)
+                    div.className = 'flex justify-start flex-col my-2';
+                    div.innerHTML = `
+                        <div class="text-xs text-gray-500 text-left ml-2 mb-1">${msg.time}</div>
+                        <div class="bg-green-50 text-green-800 border border-green-200 rounded-lg px-3 py-2 max-w-[80%] mr-auto break-words">
+                            ${msg.text}
+                        </div>
+                    `;
+                } else if (msg.sender === 'system-incoming') {
+                    // For "Payment received" messages (left-aligned, distinct style)
+                    div.className = 'flex justify-start flex-col my-2';
+                    div.innerHTML = `
+                        <div class="text-xs text-gray-500 text-left ml-2 mb-1">${msg.time}</div>
+                        <div class="bg-blue-50 text-blue-800 border border-blue-200 rounded-lg px-3 py-2 max-w-[80%] mr-auto break-words">
+                            ${msg.text}
+                        </div>
+                    `;
+                }
+                else {
+                    // Existing logic for user/other messages
+                    div.className = `flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} flex-col`;
+                    div.innerHTML = `
+                        <div class="text-xs text-gray-500 ${msg.sender === 'user' ? 'text-right mr-2' : 'text-left ml-2'} mb-1">${msg.time}</div>
+                        <div class="${msg.sender === 'user' ? 'bg-green-100 text-green-900 ml-auto' : 'bg-gray-200 mr-auto'} rounded-lg px-3 py-2 max-w-[80%] break-words">
+                            ${msg.text}
+                        </div>
+                    `;
+                }
                 chatMessagesContainer.appendChild(div);
             });
 
-            // Add the payment suggestion button after all messages for Ethan's chat
-            if (appState.currentRecipient === 'Ethan') {
-                const suggestionButton = `
-                    <div class="flex justify-start mt-3">
-                        <button class="bg-white border border-green-500 text-green-600 font-semibold rounded-lg px-4 py-2 hover:bg-green-50 transition-colors" onclick="startPayment(50, 'Ethan')">Suggestion: Pay $50</button>
-                    </div>
-                `;
-                chatMessagesContainer.innerHTML += suggestionButton; 
-            } else {
-                // Add "Accept Money" suggestion for incoming transactions
-                const pendingIncomingTx = getPendingIncomingTransaction(appState.currentRecipient);
-                if (pendingIncomingTx) {
-                    const acceptButton = `
+            // Logic to hide/show suggestion/accept buttons based on whether a payment confirmation system message exists
+            const hasPaymentConfirmation = messages.some(msg => 
+                (msg.sender === 'system' || msg.sender === 'system-incoming') && msg.text.includes('Payment')
+            );
+
+            if (!hasPaymentConfirmation) { // Only show suggestions if no payment confirmation yet
+                if (appState.currentRecipient === 'Ethan') {
+                    const suggestionButton = `
                         <div class="flex justify-start mt-3">
-                            <button class="bg-white border border-green-500 text-green-600 font-semibold rounded-lg px-4 py-2 hover:bg-green-50 transition-colors" onclick="startReceivingMoney(${pendingIncomingTx.amount}, '${pendingIncomingTx.name}', '${pendingIncomingTx.id}')">
-                                Accept $${pendingIncomingTx.amount.toFixed(2)}
-                            </button>
+                            <button class="bg-white border border-green-500 text-green-600 font-semibold rounded-lg px-4 py-2 hover:bg-green-50 transition-colors" onclick="startPayment(50, 'Ethan')">Suggestion: Pay $50</button>
                         </div>
                     `;
-                    chatMessagesContainer.innerHTML += acceptButton;
+                    chatMessagesContainer.innerHTML += suggestionButton;
+                } else {
+                    const pendingIncomingTx = getPendingIncomingTransaction(appState.currentRecipient);
+                    if (pendingIncomingTx) {
+                        const acceptButton = `
+                            <div class="flex justify-start mt-3">
+                                <button class="bg-white border border-green-500 text-green-600 font-semibold rounded-lg px-4 py-2 hover:bg-green-50 transition-colors" onclick="startReceivingMoney(${pendingIncomingTx.amount}, '${pendingIncomingTx.name}', '${pendingIncomingTx.id}')">
+                                    Accept $${pendingIncomingTx.amount.toFixed(2)}
+                                </button>
+                            </div>
+                        `;
+                        chatMessagesContainer.innerHTML += acceptButton;
+                    }
                 }
             }
         }
@@ -531,10 +667,22 @@
         function handleAccountSelection(selectElement) {
             appState.currentAccount = selectElement.value; // Update the selected account in appState
             if (selectElement.value === 'link-new-bank') {
+                appState.paymentFlowActive = true; // Set flag when linking from payment flow
                 closeModal(); // Close the current payment modal
-                showBankSelection(); // Changed to showBankSelection
-                // Reset the select to the default or previous value to avoid re-triggering
-                selectElement.value = appState.linkedAccounts[0] || ''; 
+                showBankSelection(); 
+                // No need to reset selectElement.value here, as the modal will be closed and re-opened.
+            }
+        }
+
+        // New function to handle selection in the receive money flow
+        function handleReceiveAccountSelection(selectElement) {
+            if (selectElement.value === 'link-new-bank') {
+                appState.receiveFlowActive = true; // Set flag when linking from receive flow
+                closeModal(); // Close the current receive modal
+                showBankSelection(); 
+                // No need to reset selectElement.value here, as the modal will be closed and re-opened.
+            } else {
+                appState.currentAccount = selectElement.value;
             }
         }
 
@@ -679,10 +827,13 @@
         
         function showPaymentSuccess() {
             const newTxId = `TX${Math.floor(Math.random() * 900000000) + 100000000}`;
+            const now = new Date();
+            const dateString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')} ${now.getHours() >= 12 ? 'PM' : 'AM'}`;
+
             const newTransaction = {
                 id: (appState.transactions.length + 1).toString(),
                 name: appState.currentRecipient,
-                date: 'Today', 
+                date: 'Today', // Keep 'Today' for the display in history
                 amount: appState.currentPaymentAmount,
                 status: 'completed',
                 txId: newTxId,
@@ -690,6 +841,21 @@
                 type: 'outgoing' // New transactions are outgoing
             };
             appState.transactions.push(newTransaction); 
+
+            // Also update the conversation's last message and time for sorting
+            const convoIndex = appState.conversations.findIndex(c => c.name === appState.currentRecipient);
+            if (convoIndex !== -1) {
+                const chatMessage = {
+                    sender: 'system', // New type for system messages
+                    text: `Payment sent: $${appState.currentPaymentAmount.toFixed(2)}`,
+                    time: dateString
+                };
+                appState.conversations[convoIndex].messages.push(chatMessage); // Add to conversation's messages
+                appState.conversations[convoIndex].lastMessage = chatMessage.text; // Update last message for chat list
+                appState.conversations[convoIndex].time = `Today ${dateString}`; // Update time for chat list sorting
+                appState.conversations[convoIndex].unread = 0; // Assuming sending a message makes it read
+            }
+
 
              const content = `
                 <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-8 text-center">
@@ -712,6 +878,7 @@
             renderTransactionHistory('all');
             renderTransactionsChart();
             renderIndividualChat(); // Re-render chat to remove "Accept" button if applicable
+            renderChatList(); // Re-render chat list to reflect updated conversation order/status
         }
 
 
@@ -825,8 +992,8 @@
             if (!appState.linkedAccounts.includes(bankName)) {
                 appState.linkedAccounts.push(bankName);
             }
-            renderLinkedAccounts(); // <--- This line ensures the main settings page is updated
-            showBankLinkedSuccess(bankName);
+            renderLinkedAccounts(); // Update the main settings page's linked accounts list
+            showBankLinkedSuccess(bankName); // This will handle navigation based on appState.paymentFlowActive
         }
 
         function showBankLinkedSuccess(bankName) {
@@ -837,10 +1004,22 @@
                     </div>
                     <h2 class="text-3xl font-bold mt-6">Bank linked successfully</h2>
                     <p class="text-gray-600 text-lg mt-2">${bankName} is now linked.</p>
-                    <button class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors mt-8" onclick="showLinkedAccounts(event)">Done</button>
+                    ${appState.paymentFlowActive ?
+                        `<button class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors mt-8" onclick="closeModalAndReturnToPayment('${bankName}')">Done</button>` :
+                        appState.receiveFlowActive ?
+                        `<button class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors mt-8" onclick="closeModalAndReturnToReceive('${bankName}')">Done</button>` :
+                        `<button class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors mt-8" onclick="showLinkedAccounts(event)">Done</button>`
+                    }
                 </div>
             `;
             showModal(content);
+        }
+
+        function closeModalAndReturnToPayment(newlyLinkedBankName) {
+            closeModal();
+            appState.paymentFlowActive = false; // Reset the flag
+            appState.currentAccount = newlyLinkedBankName; // Set the newly linked bank as the current selected account
+            startPayment(appState.currentPaymentAmount, appState.currentRecipient); // Re-open the payment modal
         }
 
         // --- New Functions for Receiving Money ---
@@ -850,9 +1029,12 @@
             appState.currentReceiveTxId = txId;
 
             // Dynamically generate account options from appState.linkedAccounts for deposit
-            const accountOptions = appState.linkedAccounts.map(account =>
-                `<option value="${account}">${account}</option>`
+            let accountOptions = appState.linkedAccounts.map(account =>
+                `<option value="${account}" ${account === appState.currentAccount ? 'selected' : ''}>${account}</option>`
             ).join('');
+            // Add the "Add new bank or link new bank" option for receiving
+            accountOptions += `<option value="link-new-bank">Add new bank or link new bank</option>`;
+
 
             const content = `
                 <div class="bg-white rounded-lg shadow-xl w-full max-w-sm animate-fade-in-up">
@@ -862,7 +1044,7 @@
                         <div class="text-5xl font-bold my-6">$${amount.toFixed(2)}</div>
                         <div class="text-left mt-4">
                             <label class="text-sm font-semibold text-gray-600">Deposit to Account</label>
-                            <select id="receiveAccountSelect" class="w-full mt-1 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <select id="receiveAccountSelect" class="w-full mt-1 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" onchange="handleReceiveAccountSelection(this)">
                                 ${accountOptions}
                             </select>
                         </div>
@@ -934,6 +1116,24 @@
                 };
                 appState.transactions.push(newTransaction);
             }
+            
+            const now = new Date();
+            const dateString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')} ${now.getHours() >= 12 ? 'PM' : 'AM'}`;
+
+            // Update the conversation's last message and time for sorting
+            const convoIndex = appState.conversations.findIndex(c => c.name === appState.currentReceiveSender);
+            if (convoIndex !== -1) {
+                const chatMessage = {
+                    sender: 'system-incoming', // New type for incoming system messages
+                    text: `Payment received: $${appState.currentReceiveAmount.toFixed(2)}`,
+                    time: dateString
+                };
+                appState.conversations[convoIndex].messages.push(chatMessage); // Add to conversation's messages
+                appState.conversations[convoIndex].lastMessage = chatMessage.text; // Update last message for chat list
+                appState.conversations[convoIndex].time = `Today ${dateString}`; // Update time for chat list sorting
+                appState.conversations[convoIndex].unread = 0; // Assuming accepting makes it read
+            }
+
 
             const content = `
                 <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-8 text-center">
@@ -950,12 +1150,21 @@
             showModal(content);
 
             // After accepting, remove the unread badge from the conversation if it exists
-            const convoIndex = appState.conversations.findIndex(c => c.name === appState.currentReceiveSender);
-            if (convoIndex !== -1) {
-                appState.conversations[convoIndex].unread = 0;
+            const unreadConvoIndex = appState.conversations.findIndex(c => c.name === appState.currentReceiveSender);
+            if (unreadConvoIndex !== -1) {
+                appState.conversations[unreadConvoIndex].unread = 0;
                 // Re-render the chat list to update the unread badge
                 renderChatList();
             }
+        }
+
+        // New function to return to the receive money modal after linking a bank
+        function closeModalAndReturnToReceive(newlyLinkedBankName) {
+            closeModal();
+            appState.receiveFlowActive = false; // Reset the flag
+            appState.currentAccount = newlyLinkedBankName; // Set the newly linked bank as the current selected account
+            // Re-open the receive money modal with the original details and the new account selected
+            startReceivingMoney(appState.currentReceiveAmount, appState.currentReceiveSender, appState.currentReceiveTxId);
         }
 
 

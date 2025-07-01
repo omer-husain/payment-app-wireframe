@@ -11,13 +11,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: WhatsApp Inspired Neutrals -->
     <!-- Application Structure Plan: A tab-based SPA structure was chosen for superior usability. It separates the primary user task (sending money via the 'Chat' tab) from secondary tasks like reviewing past payments ('History' tab) and managing account details ('Settings' tab). This non-linear, task-oriented structure is more intuitive and scalable than a simple linear progression of screens. The core payment flow is handled via a sequence of modals to maintain context and focus the user on the transaction process from initiation to completion. -->
-    <!-- Visualization & Content Choices: Report Info: Transaction list -> Goal: Inform/Compare -> Viz: Interactive list with filters and a summary bar chart (Chart.js/Canvas) -> Interaction: Users can filter transactions by status (Completed, Incomplete) to quickly find information. The chart provides a high-level comparison of spending per recipient. Report Info: Settings options -> Goal: Organize/Inform -> Viz: Toggled list (HTML/CSS) -> Interaction: Users can tap options to navigate or toggle switches to change security settings. This approach makes complex information easily digestible and interactive. -->
+    <!-- Visualization & Content Choices: Report Info: Transaction list -> Goal: Inform/Compare -> Viz: Interactive list with filters and a summary bar chart (Chart.js/Canvas) -> Interaction: Users can filter transactions by status (Completed, Incomplete) to quickly find information. The chart provides a high-level comparison of spending by recipient. Report Info: Settings options -> Goal: Organize/Inform -> Viz: Toggled list (HTML/CSS) -> Interaction: Users can tap options to navigate or toggle switches to change security settings. This approach makes complex information easily digestible and interactive. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body { font-family: 'Inter', sans-serif; }
         .tab-active { color: #16a34a; border-color: #16a34a; }
         .tab-inactive { color: #6b7280; border-color: transparent; }
         .modal-hidden { display: none; }
+        .pin-digit {
+            width: 24px;
+            height: 24px;
+            border-bottom: 2px solid #ccc;
+            text-align: center;
+            font-size: 20px;
+            line-height: 24px;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -26,27 +34,40 @@
 
         <!-- Main Content -->
         <main id="main-content" class="flex-grow overflow-y-auto pb-20">
-            <!-- Chat/Home View -->
-            <div id="view-chat" class="page-view p-4">
-                 <div class="text-center mb-4 border-b pb-4">
-                    <h1 class="text-xl font-bold">Liam</h1>
+            <!-- Chat List View (New Initial Page) -->
+            <div id="view-chat-list" class="page-view p-4">
+                <div class="text-center mb-4 border-b pb-4">
+                    <h1 class="text-xl font-bold">Chats</h1>
+                    <p class="text-sm text-gray-500">Select a conversation to view chat history and initiate payments.</p>
+                </div>
+                <ul id="conversation-list" class="space-y-3">
+                    <!-- Conversation items will be rendered here by JavaScript -->
+                </ul>
+            </div>
+
+            <!-- Individual Chat View (Previously view-chat) -->
+            <div id="view-individual-chat" class="page-view hidden p-4">
+                 <div class="mb-4 border-b pb-4 flex items-center justify-between">
+                    <button class="text-gray-600 hover:text-gray-800 p-2 rounded-full" onclick="navigateToTab('chat-list')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <h1 class="text-xl font-bold flex-grow text-center" id="individual-chat-header"></h1>
+                    <div class="w-10"></div> <!-- Spacer to balance the back button -->
+                </div>
+                <div class="text-center mb-4">
                     <p class="text-sm text-gray-500">This section simulates the chat where a payment can be initiated. Click the payment suggestion or the dollar icon below to start the payment process.</p>
                 </div>
-                <div class="space-y-3">
-                    <div class="flex justify-start"><div class="bg-gray-200 rounded-lg px-3 py-2 max-w-xs">Hey Jason, are we still on for the weekend? <span class="text-xs text-gray-500 block text-right">11:15</span></div></div>
-                    <div class="flex justify-end"><div class="bg-green-100 text-green-900 rounded-lg px-3 py-2 max-w-xs">Yes, looking forward to it! <span class="text-xs text-gray-500 block text-right">11:17</span></div></div>
-                    <div class="flex justify-start"><div class="bg-gray-200 rounded-lg px-3 py-2 max-w-xs">Great! <span class="text-xs text-gray-500 block text-right">11:19</span></div></div>
-                    <div class="flex justify-start"><div class="bg-gray-200 rounded-lg px-3 py-2 max-w-xs">Can you send me $50 for the tickets? <span class="text-xs text-gray-500 block text-right">11:20</span></div></div>
-                    <div class="flex justify-start">
-                        <button class="bg-white border border-green-500 text-green-600 font-semibold rounded-lg px-4 py-2 hover:bg-green-50 transition-colors" onclick="startPayment()">Suggestion: Pay $50</button>
-                    </div>
+                <div id="chat-messages" class="space-y-3">
+                    <!-- Chat messages will be rendered here by JavaScript -->
                 </div>
                 <div class="fixed bottom-16 left-1/2 -translate-x-1/2 w-full max-w-md px-4 py-2 bg-white border-t">
                     <div class="flex items-center">
                         <input type="text" placeholder="Type a message" class="flex-grow border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
                         <button class="ml-2 text-gray-500 p-2">📎</button>
                         <button class="ml-1 text-gray-500 p-2">🎤</button>
-                        <button class="ml-1 bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-xl" onclick="startPayment()">$</button>
+                        <button class="ml-1 bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-xl" onclick="startPayment(null, appState.currentRecipient)">$</button>
                     </div>
                 </div>
             </div>
@@ -63,10 +84,13 @@
                     </div>
                 </div>
                 <div class="px-4 pt-4">
-                    <div class="flex justify-center space-x-2 mb-4 border-b pb-4">
-                        <button class="history-filter-btn px-4 py-1.5 text-sm font-semibold rounded-full bg-green-600 text-white" data-filter="all">All</button>
-                        <button class="history-filter-btn px-4 py-1.5 text-sm font-semibold rounded-full bg-gray-200 text-gray-700" data-filter="completed">Completed</button>
-                        <button class="history-filter-btn px-4 py-1.5 text-sm font-semibold rounded-full bg-gray-200 text-gray-700" data-filter="incomplete">Incomplete</button>
+                    <div class="flex justify-center space-x-2 mb-4 border-b pb-4 flex-wrap">
+                        <button class="history-filter-btn px-4 py-1.5 text-sm font-semibold rounded-full bg-green-600 text-white m-1" data-filter="all">All</button>
+                        <button class="history-filter-btn px-4 py-1.5 text-sm font-semibold rounded-full bg-gray-200 text-gray-700 m-1" data-filter="completed">Completed</button>
+                        <button class="history-filter-btn px-4 py-1.5 text-sm font-semibold rounded-full bg-gray-200 text-gray-700 m-1" data-filter="incomplete">Incomplete</button>
+                        <button class="history-filter-btn px-4 py-1.5 text-sm font-semibold rounded-full bg-gray-200 text-gray-700 m-1" data-filter="outgoing">Outgoing</button>
+                        <button class="history-filter-btn px-4 py-1.5 text-sm font-semibold rounded-full bg-gray-200 text-gray-700 m-1" data-filter="incoming">Incoming</button>
+                        <button class="history-filter-btn px-4 py-1.5 text-sm font-semibold rounded-full bg-gray-200 text-gray-700 m-1" data-filter="pending">Pending</button>
                     </div>
                     <ul id="transaction-list" class="space-y-4"></ul>
                 </div>
@@ -81,11 +105,8 @@
                 <div class="p-4 space-y-6">
                     <div>
                         <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Linked Accounts</h2>
-                        <div class="bg-white rounded-lg shadow-sm">
-                            <a href="#" class="flex justify-between items-center p-3 hover:bg-gray-50" onclick="showLinkedAccounts(event)">
-                                <span>MyBank Checking</span>
-                                <span class="text-gray-400">&gt;</span>
-                            </a>
+                        <div id="linked-accounts-list" class="bg-white rounded-lg shadow-sm">
+                            <!-- Linked accounts will be rendered here by JavaScript -->
                         </div>
                     </div>
                      <div>
@@ -103,6 +124,13 @@
                                 <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
                                     <input type="checkbox" name="faceid-toggle" id="faceid-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
                                     <label for="faceid-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center p-3">
+                               <label for="fingerprint-toggle">Enable Fingerprint</label>
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="fingerprint-toggle" id="fingerprint-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" checked/>
+                                    <label for="fingerprint-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                                 </div>
                             </div>
                         </div>
@@ -123,9 +151,9 @@
         <!-- Bottom Tab Navigation -->
         <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t">
             <div class="flex justify-around">
-                <button class="nav-tab flex-1 text-center py-3 border-b-2 tab-active" data-view="chat">
+                <button class="nav-tab flex-1 text-center py-3 border-b-2 tab-active" data-view="chat-list">
                     <span class="text-2xl">💬</span>
-                    <span class="block text-xs">Chat</span>
+                    <span class="block text-xs">Chats</span>
                 </button>
                 <button class="nav-tab flex-1 text-center py-3 border-b-2 tab-inactive" data-view="history">
                     <span class="text-2xl">📖</span>
@@ -143,16 +171,44 @@
     <div id="modal-container"></div>
 
     <script>
+        // Define the initial state of transactions
+        const initialTransactions = [
+            { id: '1', name: 'Samuel', date: 'Today', amount: 50.00, status: 'completed', txId: '6789012345', bankAccount: 'MyBank Checking', type: 'outgoing' },
+            { id: '2', name: 'Michelle', date: 'Apr 18', amount: 100.00, status: 'completed', txId: '5678901234', bankAccount: 'MyBank Checking', type: 'outgoing' },
+            { id: '3', name: 'Daniel', date: 'Apr 15', amount: 25.00, status: 'completed', txId: '4567019283', bankAccount: 'MyBank Checking', type: 'outgoing' },
+            { id: '4', name: 'Ethan', date: 'Apr 12', amount: 50.00, status: 'incomplete', txId: '3456780129', bankAccount: 'MyBank Checking', type: 'outgoing' },
+            { id: '5', name: 'Stephanie', date: 'Mar 21', amount: 40.00, status: 'completed', txId: '2345678901', bankAccount: 'MyBank Checking', type: 'outgoing' },
+            // Changed status to 'pending' for incoming transactions to simulate acceptance flow
+            { id: '6', name: 'John Doe', date: 'Today', amount: 75.00, status: 'pending', txId: '9876543210', bankAccount: 'Unknown', type: 'incoming' },
+            { id: '7', name: 'Jane Smith', date: 'Yesterday', amount: 30.00, status: 'pending', txId: '1098765432', bankAccount: 'Unknown', type: 'incoming' },
+        ];
+
+        // Define initial conversations for the chat list
+        const initialConversations = [
+            { id: 'convo-ethan', name: 'Ethan', lastMessage: 'Awesome! Can you send me your share, $50, for the tickets?', time: '11:20 AM', unread: 1 },
+            { id: 'convo-samuel', name: 'Samuel', lastMessage: 'Thanks for the lunch!', time: 'Yesterday', unread: 0 },
+            { id: 'convo-michelle', name: 'Michelle', lastMessage: 'Did you get my transfer?', time: 'Mon', unread: 0 },
+            { id: 'convo-daniel', name: 'Daniel', lastMessage: 'Meeting confirmed for Friday.', time: 'Apr 15', unread: 0 },
+            { id: 'convo-stephanie', name: 'Stephanie', lastMessage: 'See you at the gym!', time: 'Mar 21', unread: 0 },
+            // Updated messages to reflect pending incoming transactions
+            { id: 'convo-john', name: 'John Doe', lastMessage: 'Just sent you $75. Please accept.', time: '10:00 AM', unread: 1 },
+            { id: 'convo-jane', name: 'Jane Smith', lastMessage: 'Transferred the $30. Let me know when you get it.', time: 'Yesterday', unread: 1 },
+        ];
+
         const appState = {
-            currentView: 'chat',
-            transactions: [
-                { id: '1', name: 'Samuel', date: 'Today', amount: 50.00, status: 'completed', txId: '6789012345' },
-                { id: '2', name: 'Michelle', date: 'Apr 18', amount: 100.00, status: 'completed', txId: '5678901234' },
-                { id: '3', name: 'Daniel', date: 'Apr 15', amount: 25.00, status: 'completed', txId: '4567019283' },
-                { id: '4', name: 'Ethan', date: 'Apr 12', amount: 50.00, status: 'incomplete', txId: '3456780129' },
-                { id: '5', name: 'Stephanie', date: 'Mar 21', amount: 40.00, status: 'completed', txId: '2345678901' },
-            ],
+            currentView: 'chat-list', // Start with the chat list view
+            transactions: [...initialTransactions],
+            conversations: [...initialConversations], // Store conversation data
+            linkedAccounts: ['MyBank Checking'], // Initial linked account
             transactionsChart: null,
+            currentPaymentAmount: 0,
+            currentRecipient: '', // Will be set when opening an individual chat
+            currentAccount: 'MyBank Checking', // Default account for new payments
+            currentPin: '',
+            correctPin: '1234',
+            currentReceiveAmount: 0, // New: amount for incoming transaction
+            currentReceiveSender: '', // New: sender for incoming transaction
+            currentReceiveTxId: '' // New: ID of the pending incoming transaction
         };
 
         const modalContainer = document.getElementById('modal-container');
@@ -174,33 +230,197 @@
             if (viewId === 'history') {
                 renderTransactionHistory('all');
                 renderTransactionsChart();
+            } else if (viewId === 'chat-list') {
+                renderChatList();
+            } else if (viewId === 'settings') {
+                renderLinkedAccounts(); // Render linked accounts when navigating to settings
             }
         }
+
+        function renderChatList() {
+            const conversationList = document.getElementById('conversation-list');
+            conversationList.innerHTML = ''; // Clear previous list
+
+            appState.conversations.forEach(convo => {
+                const li = document.createElement('li');
+                // Removed the circle div, adjusted padding and alignment for text-only entry
+                li.className = 'flex items-center p-4 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50 transition-colors';
+                li.onclick = () => openIndividualChat(convo.name);
+                li.innerHTML = `
+                    <div class="flex-grow pl-2"> <!-- Added left padding for alignment -->
+                        <div class="font-semibold text-lg">${convo.name}</div>
+                        <div class="text-sm text-gray-600 truncate">${convo.lastMessage}</div>
+                    </div>
+                    <div class="text-right text-xs text-gray-500 ml-4">
+                        ${convo.time}
+                        ${convo.unread > 0 ? `<span class="block mt-1 bg-green-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center mx-auto">${convo.unread}</span>` : ''}
+                    </div>
+                `;
+                conversationList.appendChild(li);
+            });
+        }
+
+        function openIndividualChat(recipientName) {
+            appState.currentRecipient = recipientName;
+            navigateToTab('individual-chat'); // Navigate to the individual chat view
+            renderIndividualChat(); // Render content for the specific chat
+        }
+
+        function renderIndividualChat() {
+            const chatHeader = document.getElementById('individual-chat-header');
+            const chatMessagesContainer = document.getElementById('chat-messages');
+            chatHeader.textContent = appState.currentRecipient;
+            chatMessagesContainer.innerHTML = ''; // Clear existing messages
+
+            // Mock messages based on recipient
+            let messages = [];
+            if (appState.currentRecipient === 'Ethan') {
+                messages = [
+                    { sender: 'user', text: 'Hey Ethan, did you get those concert tickets?', time: '11:15' },
+                    { sender: 'other', text: 'Yep, just confirmed them! Looking forward to it!', time: '11:17' },
+                    { sender: 'user', text: 'Awesome! Can\'t wait. What\'s the plan for getting there?', time: '11:18' },
+                    { sender: 'other', text: 'I was thinking we could carpool. I\'ll drive if you\'re good with that.', time: '11:19' },
+                    { sender: 'other', text: 'Awesome! Can you send me your share, $50, for the tickets?', time: '11:20' },
+                ];
+            } else if (appState.currentRecipient === 'Samuel') {
+                messages = [
+                    { sender: 'other', text: 'Hey, thanks again for lunch yesterday!', time: '09:30' },
+                    { sender: 'user', text: 'No problem, it was great catching up!', time: '09:31' },
+                    { sender: 'other', text: 'Totally! Just wanted to confirm if you got the payment I sent for my share?', time: '09:32' },
+                    { sender: 'user', text: 'Yep, got it! Thanks!', time: '09:33' }
+                ];
+            } else if (appState.currentRecipient === 'Michelle') {
+                messages = [
+                    { sender: 'user', text: 'Hi Michelle, just checking if you received the transfer for the group gift?', time: '14:05' },
+                    { sender: 'other', text: 'Oh, hey! Yes, I did! Thanks so much, that was quick!', time: '14:07' },
+                    { sender: 'user', text: 'Great! Just wanted to make sure.', time: '14:08' }
+                ];
+            } else if (appState.currentRecipient === 'Daniel') {
+                messages = [
+                    { sender: 'other', text: 'Hey Daniel, just a reminder about our meeting on Friday at 10 AM. Agenda is in the invite.', time: '16:00' },
+                    { sender: 'user', text: 'Got it, thanks for the reminder! I\'ll be there.', time: '16:01' },
+                    { sender: 'other', text: 'Perfect. See you then!', time: '16:02' }
+                ];
+            } else if (appState.currentRecipient === 'Stephanie') {
+                messages = [
+                    { sender: 'user', text: 'Are you still planning on hitting the gym later?', time: '17:30' },
+                    { sender: 'other', text: 'Absolutely! Just finishing up work. Be there in about 30?', time: '17:32' },
+                    { sender: 'user', text: 'Sounds good! I\'m already here, warming up.', time: '17:33' },
+                    { sender: 'other', text: 'Nice! See you soon!', time: '17:34' }
+                ];
+            } else if (appState.currentRecipient === 'John Doe') {
+                messages = [
+                    { sender: 'other', text: 'Hey, just sent you $75. Please accept.', time: '10:00 AM' },
+                    { sender: 'user', text: 'Okay, I\'ll accept it now!', time: '10:01 AM' },
+                ];
+            } else if (appState.currentRecipient === 'Jane Smith') {
+                messages = [
+                    { sender: 'other', text: 'Transferred the $30. Let me know when you get it.', time: 'Yesterday' },
+                    { sender: 'user', text: 'Got it, accepting now!', time: 'Yesterday' },
+                ];
+            }
+            else {
+                // Default generic messages for any other contact
+                messages = [
+                    { sender: 'other', text: `Hi, this is a chat with ${appState.currentRecipient}.`, time: '10:00' },
+                    { sender: 'user', text: 'Hello!', time: '10:01' },
+                    { sender: 'other', text: 'How can I help you today?', time: '10:02' }
+                ];
+            }
+
+            messages.forEach(msg => {
+                const div = document.createElement('div');
+                // Corrected alignment for chat bubbles and timestamps
+                div.className = `flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} flex-col`; 
+                div.innerHTML = `
+                    <div class="text-xs text-gray-500 ${msg.sender === 'user' ? 'text-right' : 'text-left'} mb-1">${msg.time}</div>
+                    <div class="${msg.sender === 'user' ? 'bg-green-100 text-green-900' : 'bg-gray-200'} rounded-lg px-3 py-2 max-w-xs">
+                        ${msg.text}
+                    </div>
+                `;
+                chatMessagesContainer.appendChild(div);
+            });
+
+            // Add the payment suggestion button after all messages for Ethan's chat
+            if (appState.currentRecipient === 'Ethan') {
+                const suggestionButton = `
+                    <div class="flex justify-start mt-3">
+                        <button class="bg-white border border-green-500 text-green-600 font-semibold rounded-lg px-4 py-2 hover:bg-green-50 transition-colors" onclick="startPayment(50, 'Ethan')">Suggestion: Pay $50</button>
+                    </div>
+                `;
+                chatMessagesContainer.innerHTML += suggestionButton; 
+            } else {
+                // Add "Accept Money" suggestion for incoming transactions
+                const pendingIncomingTx = getPendingIncomingTransaction(appState.currentRecipient);
+                if (pendingIncomingTx) {
+                    const acceptButton = `
+                        <div class="flex justify-start mt-3">
+                            <button class="bg-white border border-green-500 text-green-600 font-semibold rounded-lg px-4 py-2 hover:bg-green-50 transition-colors" onclick="startReceivingMoney(${pendingIncomingTx.amount}, '${pendingIncomingTx.name}', '${pendingIncomingTx.id}')">
+                                Accept $${pendingIncomingTx.amount.toFixed(2)}
+                            </button>
+                        </div>
+                    `;
+                    chatMessagesContainer.innerHTML += acceptButton;
+                }
+            }
+        }
+
 
         function renderTransactionHistory(filter) {
             const list = document.getElementById('transaction-list');
             list.innerHTML = '';
-            const filteredTransactions = appState.transactions.filter(t => filter === 'all' || t.status === filter);
+            let filteredTransactions = appState.transactions;
             
+            if (filter === 'completed') {
+                filteredTransactions = appState.transactions.filter(t => t.status === 'completed');
+            } else if (filter === 'incomplete') {
+                filteredTransactions = appState.transactions.filter(t => t.status === 'incomplete');
+            } else if (filter === 'outgoing') {
+                filteredTransactions = appState.transactions.filter(t => t.type === 'outgoing');
+            } else if (filter === 'incoming') {
+                filteredTransactions = appState.transactions.filter(t => t.type === 'incoming');
+            } else if (filter === 'pending') { // New filter for pending transactions
+                filteredTransactions = appState.transactions.filter(t => t.status === 'pending');
+            }
+            // 'all' filter doesn't require further filtering
+
             if (filteredTransactions.length === 0) {
                 list.innerHTML = `<li class="text-center text-gray-500 py-8">No transactions found.</li>`;
                 return;
             }
 
+            // Sort transactions by date (most recent first) - simple string comparison for "Today", "Apr 18" etc.
+            // For a real app, use Date objects for accurate sorting.
+            filteredTransactions.sort((a, b) => {
+                const dateA = a.date === 'Today' ? new Date() : new Date(a.date + ' 2025'); // Assuming current year
+                const dateB = b.date === 'Today' ? new Date() : new Date(b.date + ' 2025'); // Assuming current year
+                return dateB - dateA;
+            });
+
+
             filteredTransactions.forEach(t => {
                 const item = document.createElement('li');
+                const amountColor = t.type === 'incoming' ? 'text-green-600' : 'text-gray-800';
+                let typeLabel = t.type === 'incoming' ? 'Incoming' : 'Outgoing';
+                if (t.status === 'pending') {
+                    typeLabel += ' (Pending)';
+                } else if (t.status === 'incomplete') {
+                    typeLabel += ' (Incomplete)';
+                }
+
+
                 item.className = 'flex items-center justify-between p-3 bg-white rounded-lg shadow-sm';
                 item.innerHTML = `
                     <div class="flex items-center">
                         <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center mr-3 font-bold text-gray-600">${t.name.charAt(0)}</div>
                         <div>
                             <div class="font-semibold">${t.name}</div>
-                            <div class="text-xs text-gray-500">${t.date} &bull; TX ${t.txId}</div>
+                            <div class="text-xs text-gray-500">${t.date} &bull; ${t.bankAccount}</div>
                         </div>
                     </div>
                     <div class="text-right">
-                        <div class="font-semibold text-lg ${t.status === 'incomplete' ? 'text-red-500' : 'text-gray-800'}">$${t.amount.toFixed(2)}</div>
-                        ${t.status === 'incomplete' ? '<div class="text-xs text-red-500 capitalize">Incomplete</div>' : ''}
+                        <div class="font-semibold text-lg ${amountColor}">$${t.amount.toFixed(2)}</div>
+                        <div class="text-xs ${t.status === 'incomplete' || t.status === 'pending' ? 'text-red-500' : 'text-gray-500'} capitalize">${typeLabel}</div>
                     </div>
                 `;
                 list.appendChild(item);
@@ -257,21 +477,125 @@
             modalContainer.innerHTML = '';
         }
 
-        function startPayment() {
+        function getUniqueRecipients() {
+            const recipients = new Set();
+            appState.transactions.forEach(t => recipients.add(t.name));
+            return Array.from(recipients);
+        }
+
+        // New helper function to get a pending incoming transaction
+        function getPendingIncomingTransaction(recipientName) {
+            return appState.transactions.find(t =>
+                t.name === recipientName && t.type === 'incoming' && t.status === 'pending'
+            );
+        }
+
+        // --- Linked Accounts Functions ---
+        function renderLinkedAccounts() {
+            const linkedAccountsList = document.getElementById('linked-accounts-list');
+            linkedAccountsList.innerHTML = ''; // Clear existing list
+
+            if (appState.linkedAccounts.length === 0) {
+                linkedAccountsList.innerHTML = `<div class="p-3 text-gray-500 text-center">No linked accounts.</div>`;
+            } else {
+                appState.linkedAccounts.forEach(account => {
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between items-center p-3 border-b border-gray-100 last:border-b-0';
+                    div.innerHTML = `
+                        <span>${account}</span>
+                        <button class="text-red-500 text-sm font-semibold hover:text-red-700" onclick="unlinkAccount('${account}')">Unlink</button>
+                    `;
+                    linkedAccountsList.appendChild(div);
+                });
+            }
+            // Add the "Link new account" button directly in the settings view
+            const linkNewAccountButton = document.createElement('button');
+            linkNewAccountButton.className = 'w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors mt-6';
+            linkNewAccountButton.textContent = 'Link new account';
+            linkNewAccountButton.onclick = showBankSelection; // Changed to showBankSelection
+            linkedAccountsList.appendChild(linkNewAccountButton);
+        }
+
+        function unlinkAccount(accountName) {
+            if (appState.linkedAccounts.length > 1) { // Prevent unlinking if it's the only account
+                appState.linkedAccounts = appState.linkedAccounts.filter(account => account !== accountName);
+                renderLinkedAccounts(); // Re-render the list on the main settings page
+                // If the modal is open, it will be re-rendered when showLinkedAccounts is called again.
+            } else {
+                // Optionally show a message that you can't unlink the last account
+                alert("Cannot unlink the last account. Please link another account first if you wish to remove this one."); // Using alert for simplicity, would use a custom modal in a real app
+            }
+        }
+
+        // --- Payment Flow Functions ---
+        function handleAccountSelection(selectElement) {
+            appState.currentAccount = selectElement.value; // Update the selected account in appState
+            if (selectElement.value === 'link-new-bank') {
+                closeModal(); // Close the current payment modal
+                showBankSelection(); // Changed to showBankSelection
+                // Reset the select to the default or previous value to avoid re-triggering
+                selectElement.value = appState.linkedAccounts[0] || ''; 
+            }
+        }
+
+        function updateSelectedRecipient(selectElement) {
+            const selectedValue = selectElement.value;
+            if (selectedValue === 'link-new-bank') {
+                closeModal(); // Close the current payment modal
+                showBankSelection(); // Changed to showBankSelection
+            } else {
+                appState.currentRecipient = selectedValue;
+            }
+        }
+
+
+        function startPayment(suggestedAmount = null, suggestedRecipient = null) {
+            appState.currentPaymentAmount = suggestedAmount || 0;
+            appState.currentRecipient = suggestedRecipient || appState.currentRecipient; 
+
+            const uniqueRecipients = getUniqueRecipients();
+            // Ensure Ethan is always an option, and default to Ethan if no suggestedRecipient
+            if (!uniqueRecipients.includes('Ethan')) {
+                uniqueRecipients.unshift('Ethan');
+            }
+            if (!appState.currentRecipient && uniqueRecipients.length > 0) {
+                appState.currentRecipient = uniqueRecipients[0];
+            } else if (!appState.currentRecipient && uniqueRecipients.length === 0) {
+                appState.currentRecipient = 'New Contact'; // Fallback if no history
+            }
+            
+            const recipientOptions = uniqueRecipients.map(name => 
+                `<option value="${name}" ${name === appState.currentRecipient ? 'selected' : ''}>${name}</option>`
+            ).join('');
+
+            // Dynamically generate account options from appState.linkedAccounts
+            let accountOptions = appState.linkedAccounts.map(account => 
+                `<option value="${account}" ${account === appState.currentAccount ? 'selected' : ''}>${account}</option>`
+            ).join('');
+            // Add the "Add new bank or link new bank" option
+            accountOptions += `<option value="link-new-bank">Add new bank or link new bank</option>`;
+
             const content = `
                 <div class="bg-white rounded-lg shadow-xl w-full max-w-sm animate-fade-in-up">
                     <div class="p-6 text-center">
                         <div class="text-gray-500 text-sm">PAYING</div>
-                        <div class="font-bold text-2xl mt-1">Ethan</div>
-                        <div class="text-5xl font-bold my-6">$50.00</div>
+                        <div class="font-bold text-2xl mt-1">
+                            <select id="recipientSelect" class="w-full text-center bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500" onchange="updateSelectedRecipient(this)">
+                                ${recipientOptions}
+                            </select>
+                        </div>
+                        <div class="text-5xl font-bold my-6 flex justify-center items-center">
+                            <span>$</span>
+                            <input type="number" id="paymentAmountInput" value="${appState.currentPaymentAmount.toFixed(2)}" class="w-32 text-center bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-green-500" oninput="updatePaymentAmount(this.value)">
+                        </div>
                         <div class="text-left">
                             <label class="text-sm font-semibold text-gray-600">Note (Optional)</label>
                             <input type="text" placeholder="e.g., For the tickets" class="w-full mt-1 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
                         </div>
                          <div class="text-left mt-4">
                             <label class="text-sm font-semibold text-gray-600">Account</label>
-                            <select class="w-full mt-1 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
-                                <option>MyBank Checking</option>
+                            <select id="accountSelect" class="w-full mt-1 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" onchange="handleAccountSelection(this)">
+                                ${accountOptions}
                             </select>
                         </div>
                         <div class="mt-8">
@@ -283,45 +607,113 @@
             showModal(content);
         }
 
+        function updatePaymentAmount(value) {
+            appState.currentPaymentAmount = parseFloat(value) || 0;
+        }
+
         function showPinAuth() {
+            appState.currentPin = '';
             const content = `
                 <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6 text-center">
                     <h2 class="text-2xl font-bold">Enter PIN</h2>
                     <p class="text-gray-600 mt-2">Enter your PIN to send the payment.</p>
-                    <div class="flex justify-center space-x-3 my-6">
-                        <div class="w-4 h-4 rounded-full border-2 border-gray-400"></div>
-                        <div class="w-4 h-4 rounded-full border-2 border-gray-400"></div>
-                        <div class="w-4 h-4 rounded-full border-2 border-gray-400"></div>
-                        <div class="w-4 h-4 rounded-full border-2 border-gray-400"></div>
+                    <div class="flex justify-center space-x-3 my-6" id="pinDisplay">
+                        <div class="pin-digit"></div>
+                        <div class="pin-digit"></div>
+                        <div class="pin-digit"></div>
+                        <div class="pin-digit"></div>
                     </div>
+                    <p id="pinError" class="text-red-500 text-sm mb-4 hidden">Incorrect PIN. Please try again.</p>
                     <div class="grid grid-cols-2 gap-4 my-6">
-                         <button class="w-full border border-gray-300 text-gray-700 font-semibold py-2 rounded-lg hover:bg-gray-100" onclick="showPaymentSuccess()">Use Face ID</button>
-                         <button class="w-full border border-gray-300 text-gray-700 font-semibold py-2 rounded-lg hover:bg-gray-100" onclick="showPaymentSuccess()">Use Fingerprint</button>
+                         <button class="w-full border border-gray-300 text-gray-700 font-semibold py-2 rounded-lg hover:bg-gray-100" onclick="checkPin('biometric')">Use Face ID</button>
+                         <button class="w-full border border-gray-300 text-gray-700 font-semibold py-2 rounded-lg hover:bg-gray-100" onclick="checkPin('biometric')">Use Fingerprint</button>
                     </div>
                     <div class="grid grid-cols-3 gap-3">
-                        ${[1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, '⌫'].map(k => `<button class="text-2xl py-3 rounded-lg hover:bg-gray-100" ${k === '' ? 'disabled' : ''} onclick="${k === '⌫' ? 'showPaymentSuccess()' : 'showPaymentSuccess()'}">${k}</button>`).join('')}
+                        ${[1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, '⌫'].map(k => `<button class="text-2xl py-3 rounded-lg hover:bg-gray-100" ${k === '' ? 'disabled' : ''} onclick="handlePinInput('${k}')">${k}</button>`).join('')}
                     </div>
-                    <button class="w-full mt-6 text-gray-600 font-semibold py-2" onclick="closeModal()">Cancel</button>
+                    <button class="w-full mt-6 text-gray-600 font-semibold py-2" onclick="startPayment(appState.currentPaymentAmount, appState.currentRecipient)">Cancel</button>
                 </div>
             `;
             showModal(content);
+            updatePinDisplay(); // Ensure PIN display is cleared and updated
+        }
+
+        function updatePinDisplay() {
+            const pinDigits = document.querySelectorAll('#pinDisplay .pin-digit');
+            pinDigits.forEach((digit, index) => {
+                digit.textContent = appState.currentPin[index] ? '•' : '';
+            });
+        }
+
+        function handlePinInput(key) {
+            document.getElementById('pinError').classList.add('hidden');
+
+            if (key === '⌫') {
+                appState.currentPin = appState.currentPin.slice(0, -1);
+            } else if (appState.currentPin.length < 4) {
+                appState.currentPin += key;
+            }
+            updatePinDisplay();
+
+            if (appState.currentPin.length === 4) {
+                // Determine which checkPin function to call based on the current modal
+                if (modalContainer.querySelector('h2').textContent.includes('Enter PIN') && modalContainer.querySelector('p').textContent.includes('send the payment')) {
+                     // If it's the general PIN entry for sending money
+                    setTimeout(() => checkPin('numeric'), 300);
+                } else if (modalContainer.querySelector('h2').textContent.includes('Enter PIN') && modalContainer.querySelector('p').textContent.includes('accept the payment')) {
+                    // If it's the receive PIN entry for accepting money
+                    setTimeout(() => checkReceivePin('numeric'), 300);
+                }
+            }
+        }
+
+        function checkPin(type) {
+            if (type === 'biometric' || appState.currentPin === appState.correctPin) {
+                showPaymentSuccess();
+            } else {
+                document.getElementById('pinError').classList.remove('hidden');
+                appState.currentPin = '';
+                updatePinDisplay();
+            }
         }
         
         function showPaymentSuccess() {
+            const newTxId = `TX${Math.floor(Math.random() * 900000000) + 100000000}`;
+            const newTransaction = {
+                id: (appState.transactions.length + 1).toString(),
+                name: appState.currentRecipient,
+                date: 'Today', 
+                amount: appState.currentPaymentAmount,
+                status: 'completed',
+                txId: newTxId,
+                bankAccount: appState.currentAccount, // Use the selected account
+                type: 'outgoing' // New transactions are outgoing
+            };
+            appState.transactions.push(newTransaction); 
+
              const content = `
                 <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-8 text-center">
                     <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto">
                         <span class="text-white text-5xl">✓</span>
                     </div>
                     <h2 class="text-3xl font-bold mt-6">Payment Sent</h2>
-                    <p class="text-gray-600 text-lg mt-2">to Ethan</p>
-                    <p class="text-4xl font-bold my-4">$50.00</p>
-                    <p class="text-sm text-gray-500">TX12345678</p>
-                    <button class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors mt-8" onclick="closeModal()">Done</button>
+                    <p class="text-gray-600 text-lg mt-2">to ${appState.currentRecipient}</p>
+                    <p class="text-4xl font-bold my-4">$${appState.currentPaymentAmount.toFixed(2)}</p>
+                    <p class="text-sm text-gray-500">${newTxId}</p>
+                    <button class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors mt-8" onclick="closeModalAndRefreshHistory()">Done</button>
                 </div>
             `;
             showModal(content);
         }
+
+        function closeModalAndRefreshHistory() {
+            closeModal();
+            // Re-render history and chart after successful payment
+            renderTransactionHistory('all');
+            renderTransactionsChart();
+            renderIndividualChat(); // Re-render chat to remove "Accept" button if applicable
+        }
+
 
         function showLinkedAccounts(event) {
             event.preventDefault();
@@ -331,51 +723,241 @@
                         <h2 class="text-xl font-bold">Linked Accounts</h2>
                         <button class="text-2xl" onclick="closeModal()">&times;</button>
                      </div>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center p-3 border rounded-lg">
-                           <div>
-                                <div class="font-semibold">MyBank Checking</div>
-                                <div class="text-sm text-gray-500">mybank.com</div>
-                           </div>
-                           <span class="text-gray-400">&gt;</span>
-                        </div>
+                    <div id="linked-accounts-modal-list" class="space-y-3">
+                        <!-- Accounts will be rendered here -->
                     </div>
-                    <button class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors mt-6" onclick="showLinkNewBank()">Link new account</button>
+                    <button class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors mt-6" onclick="showBankSelection()">Link new account</button>
+                </div>
+            `;
+            showModal(content);
+            // Render accounts inside the modal
+            const linkedAccountsModalList = document.getElementById('linked-accounts-modal-list');
+            if (appState.linkedAccounts.length === 0) {
+                linkedAccountsModalList.innerHTML = `<div class="p-3 text-gray-500 text-center">No linked accounts.</div>`;
+            } else {
+                appState.linkedAccounts.forEach(account => {
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between items-center p-3 border rounded-lg';
+                    div.innerHTML = `
+                        <span>${account}</span>
+                        <button class="text-red-500 text-sm font-semibold hover:text-red-700" onclick="unlinkAccount('${account}')">Unlink</button>
+                    `;
+                    linkedAccountsModalList.appendChild(div);
+                });
+            }
+        }
+
+        // New function to show bank selection
+        function showBankSelection() {
+            const banks = ['MyBank', 'National Trust', 'Financial Partners', 'Citizens Bank', 'Founders Federal'];
+            const content = `
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6">
+                     <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold">Select Your Bank</h2>
+                        <button class="text-2xl" onclick="closeModal()">&times;</button>
+                     </div>
+                     <p class="text-gray-600 mb-4">Choose the bank you wish to link.</p>
+                     <div class="space-y-2">
+                        ${banks.map(bank => `<button class="w-full text-left p-3 border rounded-lg hover:bg-gray-50" onclick="showBankLoginForSelectedBank('${bank}')">${bank}</button>`).join('')}
+                     </div>
+                     <button class="w-full mt-6 text-gray-600 font-semibold py-2" onclick="closeModal()">Cancel</button>
                 </div>
             `;
             showModal(content);
         }
 
-        function showLinkNewBank() {
-            const banks = ['MyBank', 'National Trust', 'Financial Partners', 'Citizens Bank', 'Founders Federal'];
+        // New function for bank-specific login
+        function showBankLoginForSelectedBank(bankName) {
+            appState.selectedBankToLink = bankName; // Store the selected bank
             const content = `
                 <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6">
-                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold">Link New Bank</h2>
-                        <button class="text-2xl" onclick="showLinkedAccounts(event)">&times;</button>
-                     </div>
-                     <p class="text-gray-600 mb-4">Select your bank or search by name.</p>
-                     <div class="space-y-2">
-                        ${banks.map(bank => `<button class="w-full text-left p-3 border rounded-lg hover:bg-gray-50" onclick="showBankLinkedSuccess()">${bank}</button>`).join('')}
-                     </div>
-                     <button class="w-full mt-6 text-gray-600 font-semibold py-2" onclick="showLinkedAccounts(event)">Cancel</button>
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold">Login to ${bankName}</h2>
+                        <button class="text-2xl" onclick="showBankSelection()">&times;</button>
+                    </div>
+                    <p class="text-gray-600 mb-4">Enter your credentials for ${bankName} to link your account.</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="bankUsername" class="block text-sm font-semibold text-gray-600 mb-1">Username</label>
+                            <input type="text" id="bankUsername" class="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter username">
+                        </div>
+                        <div>
+                            <label for="bankPassword" class="block text-sm font-semibold text-gray-600 mb-1">Password</label>
+                            <input type="password" id="bankPassword" class="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter password">
+                        </div>
+                        <p id="bankLoginError" class="text-red-500 text-sm hidden">Invalid credentials. Please try again.</p>
+                    </div>
+                    <button class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors mt-6" onclick="authenticateBank('${bankName}')">Continue</button>
+                    <button class="w-full mt-2 text-gray-600 font-semibold py-2" onclick="showBankSelection()">Back to Bank Selection</button>
                 </div>
             `;
             showModal(content);
         }
+
+        function authenticateBank(bankName) {
+            const username = document.getElementById('bankUsername').value;
+            const password = document.getElementById('bankPassword').value;
+            const errorDisplay = document.getElementById('bankLoginError');
+
+            if (username && password) {
+                errorDisplay.classList.add('hidden');
+                // Simulate OAuth authentication
+                const content = `
+                    <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-8 text-center">
+                        <h2 class="text-2xl font-bold">Authenticating...</h2>
+                        <p class="text-gray-600 mt-2">Authenticating with ${bankName} via OAuth. Please wait.</p>
+                        <div class="my-6">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto"></div>
+                        </div>
+                    </div>
+                `;
+                showModal(content);
+
+                setTimeout(() => {
+                    linkNewBank(bankName);
+                }, 2000); // Simulate network delay for OAuth
+            } else {
+                errorDisplay.classList.remove('hidden');
+            }
+        }
         
-        function showBankLinkedSuccess() {
+        function linkNewBank(bankName) {
+            if (!appState.linkedAccounts.includes(bankName)) {
+                appState.linkedAccounts.push(bankName);
+            }
+            renderLinkedAccounts(); // <--- This line ensures the main settings page is updated
+            showBankLinkedSuccess(bankName);
+        }
+
+        function showBankLinkedSuccess(bankName) {
              const content = `
                 <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-8 text-center">
                     <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto">
                         <span class="text-white text-5xl">✓</span>
                     </div>
                     <h2 class="text-3xl font-bold mt-6">Bank linked successfully</h2>
+                    <p class="text-gray-600 text-lg mt-2">${bankName} is now linked.</p>
                     <button class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors mt-8" onclick="showLinkedAccounts(event)">Done</button>
                 </div>
             `;
             showModal(content);
         }
+
+        // --- New Functions for Receiving Money ---
+        function startReceivingMoney(amount, sender, txId) {
+            appState.currentReceiveAmount = amount;
+            appState.currentReceiveSender = sender;
+            appState.currentReceiveTxId = txId;
+
+            // Dynamically generate account options from appState.linkedAccounts for deposit
+            const accountOptions = appState.linkedAccounts.map(account =>
+                `<option value="${account}">${account}</option>`
+            ).join('');
+
+            const content = `
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-sm animate-fade-in-up">
+                    <div class="p-6 text-center">
+                        <div class="text-gray-500 text-sm">RECEIVING FROM</div>
+                        <div class="font-bold text-2xl mt-1">${sender}</div>
+                        <div class="text-5xl font-bold my-6">$${amount.toFixed(2)}</div>
+                        <div class="text-left mt-4">
+                            <label class="text-sm font-semibold text-gray-600">Deposit to Account</label>
+                            <select id="receiveAccountSelect" class="w-full mt-1 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                                ${accountOptions}
+                            </select>
+                        </div>
+                        <div class="mt-8">
+                            <button class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors" onclick="showReceivePinAuth()">Confirm Acceptance</button>
+                            <button class="w-full mt-2 text-gray-600 font-semibold py-2 rounded-lg hover:bg-gray-100" onclick="closeModal()">Cancel</button>
+                        </div>
+                    </div>
+                </div>`;
+            showModal(content);
+        }
+
+        function showReceivePinAuth() {
+            appState.currentPin = ''; // Reset PIN
+            const content = `
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6 text-center">
+                    <h2 class="text-2xl font-bold">Enter PIN</h2>
+                    <p class="text-gray-600 mt-2">Enter your PIN to accept the payment.</p>
+                    <div class="flex justify-center space-x-3 my-6" id="pinDisplay">
+                        <div class="pin-digit"></div>
+                        <div class="pin-digit"></div>
+                        <div class="pin-digit"></div>
+                        <div class="pin-digit"></div>
+                    </div>
+                    <p id="pinError" class="text-red-500 text-sm mb-4 hidden">Incorrect PIN. Please try again.</p>
+                    <div class="grid grid-cols-2 gap-4 my-6">
+                         <button class="w-full border border-gray-300 text-gray-700 font-semibold py-2 rounded-lg hover:bg-gray-100" onclick="checkReceivePin('biometric')">Use Face ID</button>
+                         <button class="w-full border border-gray-300 text-gray-700 font-semibold py-2 rounded-lg hover:bg-gray-100" onclick="checkReceivePin('biometric')">Use Fingerprint</button>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        ${[1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, '⌫'].map(k => `<button class="text-2xl py-3 rounded-lg hover:bg-gray-100" ${k === '' ? 'disabled' : ''} onclick="handlePinInput('${k}')">${k}</button>`).join('')}
+                    </div>
+                    <button class="w-full mt-6 text-gray-600 font-semibold py-2" onclick="startReceivingMoney(appState.currentReceiveAmount, appState.currentReceiveSender, appState.currentReceiveTxId)">Cancel</button>
+                </div>
+            `;
+            showModal(content);
+            updatePinDisplay(); // Ensure PIN display is cleared and updated
+        }
+
+        function checkReceivePin(type) {
+            if (type === 'biometric' || appState.currentPin === appState.correctPin) {
+                const selectedAccount = document.getElementById('receiveAccountSelect').value;
+                showReceiveSuccess(selectedAccount);
+            } else {
+                document.getElementById('pinError').classList.remove('hidden');
+                appState.currentPin = '';
+                updatePinDisplay();
+            }
+        }
+
+        function showReceiveSuccess(destinationAccount) {
+            // Find the pending transaction and update its status and bankAccount
+            const txIndex = appState.transactions.findIndex(t => t.id === appState.currentReceiveTxId);
+            if (txIndex !== -1) {
+                appState.transactions[txIndex].status = 'completed';
+                appState.transactions[txIndex].bankAccount = destinationAccount; // Update destination account
+            } else {
+                // Fallback: If pending transaction not found, add as a new completed incoming transaction
+                const newTxId = `TX${Math.floor(Math.random() * 900000000) + 100000000}`;
+                const newTransaction = {
+                    id: (appState.transactions.length + 1).toString(),
+                    name: appState.currentReceiveSender,
+                    date: 'Today',
+                    amount: appState.currentReceiveAmount,
+                    status: 'completed',
+                    txId: newTxId,
+                    bankAccount: destinationAccount,
+                    type: 'incoming'
+                };
+                appState.transactions.push(newTransaction);
+            }
+
+            const content = `
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-8 text-center">
+                    <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto">
+                        <span class="text-white text-5xl">✓</span>
+                    </div>
+                    <h2 class="text-3xl font-bold mt-6">Payment Received!</h2>
+                    <p class="text-gray-600 text-lg mt-2">from ${appState.currentReceiveSender}</p>
+                    <p class="text-4xl font-bold my-4">$${appState.currentReceiveAmount.toFixed(2)}</p>
+                    <p class="text-sm text-gray-500">Deposited to ${destinationAccount}</p>
+                    <button class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors mt-8" onclick="closeModalAndRefreshHistory()">Done</button>
+                </div>
+            `;
+            showModal(content);
+
+            // After accepting, remove the unread badge from the conversation if it exists
+            const convoIndex = appState.conversations.findIndex(c => c.name === appState.currentReceiveSender);
+            if (convoIndex !== -1) {
+                appState.conversations[convoIndex].unread = 0;
+                // Re-render the chat list to update the unread badge
+                renderChatList();
+            }
+        }
+
 
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -399,6 +981,9 @@
                 .toggle-checkbox:checked + .toggle-label { background-color: #16a34a; }
             `;
             document.head.appendChild(style);
+
+            // Initial view on load
+            navigateToTab('chat-list');
         });
 
     </script>

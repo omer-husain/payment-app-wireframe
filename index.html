@@ -188,7 +188,7 @@
             { 
                 id: 'convo-ethan', 
                 name: 'Ethan', 
-                lastMessage: 'Awesome! Can you send me your share, $50, for the tickets? This is a very long message to test the wrapping functionality and ensure it does not overflow the component.', 
+                lastMessage: 'Awesome! Can you send me your share, $50, for the tickets?', 
                 time: 'Today 11:20 AM', 
                 unread: 1,
                 messages: [
@@ -196,7 +196,7 @@
                     { sender: 'other', text: 'Yep, just confirmed them! Looking forward to it!', time: '11:17 AM' },
                     { sender: 'user', text: 'Awesome! Can\'t wait. What\'s the plan for getting there?', time: '11:18 AM' },
                     { sender: 'other', text: 'I was thinking we could carpool. I\'ll drive if you\'re good with that.', time: '11:19 AM' },
-                    { sender: 'other', text: 'Awesome! Can you send me your share, $50, for the tickets? This is a very long message to test the wrapping functionality and ensure it does not overflow the component.', time: '11:20 AM' },
+                    { sender: 'other', text: 'Awesome! Can you send me your share, $50, for the tickets?', time: '11:20 AM' },
                 ]
             }, 
             { 
@@ -264,11 +264,11 @@
             { 
                 id: 'convo-sarah', 
                 name: 'Sarah Miller', 
-                lastMessage: 'Transferred the $30. Let me know when you get it. This message is also quite long to ensure proper wrapping and alignment.', 
+                lastMessage: 'Transferred the $30. Let me know when you get it.', 
                 time: 'Yesterday 03:00 PM', 
                 unread: 1,
                 messages: [
-                    { sender: 'other', text: 'Transferred the $30. Let me know when you get it. This message is also quite long to ensure proper wrapping and alignment.', time: '03:00 PM' },
+                    { sender: 'other', text: 'Transferred the $30. Let me know when you get it.', time: '03:00 PM' },
                     { sender: 'user', text: 'Got it, accepting now!', time: '03:01 PM' },
                 ]
             }, 
@@ -952,7 +952,7 @@
                             <label for="bankPassword" class="block text-sm font-semibold text-gray-600 mb-1">Password</label>
                             <input type="password" id="bankPassword" class="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter password">
                         </div>
-                        <p id="bankLoginError" class="text-red-500 text-sm hidden">Invalid credentials. Please try again.</p>
+                        <p id="bankLoginError" class="text-red-500 text-sm hidden">Please enter both username and password.</p>
                     </div>
                     <button class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors mt-6" onclick="authenticateBank('${bankName}')">Continue</button>
                     <button class="w-full mt-2 text-gray-600 font-semibold py-2" onclick="showBankSelection()">Back to Bank Selection</button>
@@ -966,9 +966,8 @@
             const password = document.getElementById('bankPassword').value;
             const errorDisplay = document.getElementById('bankLoginError');
 
-            if (username && password) {
+            if (username.trim() !== '' && password.trim() !== '') { // Check if fields are not blank
                 errorDisplay.classList.add('hidden');
-                // Simulate OAuth authentication
                 const content = `
                     <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-8 text-center">
                         <h2 class="text-2xl font-bold">Authenticating...</h2>
@@ -984,6 +983,7 @@
                     linkNewBank(bankName);
                 }, 2000); // Simulate network delay for OAuth
             } else {
+                errorDisplay.textContent = "Please enter both username and password.";
                 errorDisplay.classList.remove('hidden');
             }
         }
